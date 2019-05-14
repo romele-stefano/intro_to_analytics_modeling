@@ -24,7 +24,7 @@ sum(pred == data[,11]) / nrow(data)
 # initialized variable
 res <- 0
 
-# for loop for automatic testing model with differnt values of C
+# for loop for automatic testing model with differnt values of C, kernel = "vanilladot"
 # C = i * 100 gives values inside res <- 0.8639144 0.8639144 0.8623853 0.8623853 0.8639144
 # C = 100^i gives values inside res <- 0.8639144 0.8623853 0.6253823 0.6636086 0.4923547
 # C = 0.1^i gives values inside res <- 0.8639144 0.8639144 0.8379205 0.5474006 0.5474006
