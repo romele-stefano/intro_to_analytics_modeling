@@ -27,9 +27,10 @@ res <- 0
 # for loop for automatic testing model with differnt values of C
 # C = i * 100 gives values inside res <- 0.8639144 0.8639144 0.8623853 0.8623853 0.8639144
 # C = 100^i gives values inside res <- 0.8639144 0.8623853 0.6253823 0.6636086 0.4923547
+# C = 0.1^i gives values inside res <- 0.8639144 0.8639144 0.8379205 0.5474006 0.5474006
 for (i in 1:5) {
   #train the model
-  svm.fit <- ksvm(datamatrix[,1:10], datamatrix[,11], type="C-svc", kernel = "vanilladot", C = 100^i, scaled = TRUE)
+  svm.fit <- ksvm(datamatrix[,1:10], datamatrix[,11], type="C-svc", kernel = "vanilladot", C = 0.1^i, scaled = TRUE)
   
   # predict
   pred <- predict(svm.fit, data[,1:10])
