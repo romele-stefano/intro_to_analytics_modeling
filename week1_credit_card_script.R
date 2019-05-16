@@ -3,6 +3,8 @@ setwd("C:/Users/ROMEST/Downloads")
 library("kernlab")
 # KNN
 library("kknn")
+# k-fold cross validation
+library("caret")
 
 data <- read.table("credit_card_data-headers.txt", header = T)
 datamatrix <- as.matrix(data)
@@ -39,7 +41,7 @@ res <- 0
 # C = 0.1^i gives values inside res <- 0.8639144 0.8639144 0.8379205 0.5474006 0.5474006
 for (i in 1:5) {
   #train the model
-  svm.fit <- ksvm(datamatrix[,1:10], datamatrix[,11], type="C-svc", kernel = "vanilladot", C = 100^i, scaled = TRUE)
+  svm.fit <- ksvm(datamatrix[,1:10], datamatrix[,11], type = "C-svc", kernel = "vanilladot", C = 100^i, scaled = TRUE)
   
   # predict
   pred <- predict(svm.fit, data[,1:10])
@@ -48,7 +50,7 @@ for (i in 1:5) {
 }
 
 # We use the C = 100^i and select the model with C = 100^1
-svm.fit <- ksvm(datamatrix[,1:10], datamatrix[,11], type="C-svc", kernel = "vanilladot", C = 100, scaled = TRUE)
+svm.fit <- ksvm(datamatrix[,1:10], datamatrix[,11], type = "C-svc", kernel = "vanilladot", C = 100, scaled = TRUE)
 # predict
 pred <- predict(svm.fit, data[,1:10])
 res <- sum(pred == data[,11]) / nrow(data)
@@ -108,3 +110,54 @@ for (k in 1:10){
 
 
 # QUESTION 3.1.A
+
+# k-folds = 10, k = 10
+# taking data set as it is, we have an avg accuracy of  0.8268531
+# shuffling the data, we have an avg accuracy of  0.8502331
+
+# k-folds = 10, k = 3
+# shuffling the data, we have an avg accuracy of  0.7885781
+
+# k-folds = 10, k = 7
+# shuffling the data, we have an avg accuracy of  0.8222378
+
+data_shuffled <- data[sample(nrow(data)),]
+# store the results
+results <- 0
+
+# set number of folds
+k_folds <- 10
+folds <- cut(seq(1,nrow(data)),breaks = k_folds, labels = FALSE)
+for(i in 1:k_folds){
+  # find index in dataset 
+  index <- which(folds == i)
+  train <- data[-index,] 
+  validation <- data[index, ]
+  
+  #train the model
+  knn.fit = kknn(R1~., train, validation[,-11], k = 7, scale = TRUE) # use scaled data
+  predicted <- fitted(knn.fit)
+  predicted <- ifelse(predicted > 0.5,1,0)
+  table(validation$R1, predicted) 
+  accuracy[i] <- mean(validation$R1 == predicted)
+}
+
+avg <- sum(accuracy)/length(accuracy)
+
+
+
+
+# QUESTION 3.1.B
+
+# create a sample with 70% of observation
+s <- sample(1:3, size = nrow(data), prob = c(0.7, 0.15, 0.15), replace = TRUE)
+train <- datamatrix[s == 1,]
+validation <- datamatrix[s == 2,]
+test <- datamatrix[s == 3,]
+
+svm.fit <- ksvm(as.matrix(train[,1:10]), as.matrix(train[,11]), type="C-svc", kernel = "vanilladot", C = 100, scaled = TRUE)
+
+# predict
+pred <- predict(svm.fit, validation[,1:10])
+pred
+sum(pred == validation[,11]) / nrow(data)
