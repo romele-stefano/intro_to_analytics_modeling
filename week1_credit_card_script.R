@@ -66,9 +66,11 @@ a0 <- svm.fit@b
 
 # Test polynomial kernel
 # C = 100^i gives values inside res <- 0.8639144 0.8623853 0.3318043 0.6773700 0.7217125
+# C = 100*i gives values inside res <- 0.8639144 0.8639144 0.8623853 0.8639144 0.8639144
+# C = 0.1^i gives values inside res <- 0.8639144 0.8639144 0.8639144 0.8639144 0.8639144
 for (i in 1:5) {
   #train the 
-  svm.fit <- ksvm(datamatrix[,1:10], datamatrix[,11], type="C-svc", kernel = "polydot", C = 100^i, scaled = TRUE)
+  svm.fit <- ksvm(datamatrix[,1:10], datamatrix[,11], type="C-svc", kernel = "polydot", C = 0.1 * i, scaled = TRUE)
   
   # predict
   pred <- predict(svm.fit, data[,1:10])
