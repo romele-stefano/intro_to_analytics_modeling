@@ -155,9 +155,4 @@ train <- datamatrix[s == 1,]
 validation <- datamatrix[s == 2,]
 test <- datamatrix[s == 3,]
 
-svm.fit <- ksvm(as.matrix(train[,1:10]), as.matrix(train[,11]), type="C-svc", kernel = "vanilladot", C = 100, scaled = TRUE)
 
-# predict
-pred <- predict(svm.fit, validation[,1:10])
-pred
-sum(pred == validation[,11]) / nrow(data)
