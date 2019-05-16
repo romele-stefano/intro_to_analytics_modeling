@@ -155,4 +155,41 @@ train <- datamatrix[s == 1,]
 validation <- datamatrix[s == 2,]
 test <- datamatrix[s == 3,]
 
+# Manual tuning
+svm.fit <- ksvm(train[,1:10], train[,11], type = "C-svc", kernel = "vanilladot", C = 500, scaled = TRUE)
 
+# validate for C = 10, accuracy = 0.8545455
+# validate for C = 100, accuracy = 0.8545455
+# validate for C = 1000, accuracy = 0.8545455
+pred_validation <- predict(svm.fit, validation[,1:10])
+sum(pred_validation == validation[,11]) / nrow(validation)
+
+# test
+pred <- predict(svm.fit, test[,1:10])
+sum(pred == test[,11]) / nrow(test)
+
+
+# Automatic tuning
+# kernel = vanilladot
+# C = i * 100 gives values inside res <- 0.8545455 0.8545455 0.8545455 0.8545455 0.8545455
+# C = 100^i gives values inside res <- 0.8545455 0.8545455 0.5090909 0.7363636 0.6818182
+# C = 0.1^i gives values inside res <- 0.8545455 0.8545455 0.8545455 0.8545455 0.8545455
+# kernel = polydot
+# C = i * 100 gives values inside res <- 0.8545455 0.8545455 0.8545455 0.8545455 0.8545455
+# C = 100^i gives values inside res <- 0.8545455 0.8545455 0.6454545 0.7454545 0.7090909
+# C = 0.1^i gives values inside res <- 0.8545455 0.8545455 0.8545455 0.8545455 0.8545455
+for (i in 1:5) {
+  #train the model
+  svm.fit <- ksvm(train[,1:10], train[,11], type = "C-svc", kernel = "polydot", C = 100^i, scaled = TRUE)
+  
+  # validate 
+  pred_validation <- predict(svm.fit, validation[,1:10])
+  res[i] <- sum(pred_validation == validation[,11]) / nrow(validation)
+  
+}
+
+# test with selected model. We will use the vanilladot kernel with C = 100
+svm.fit <- ksvm(train[,1:10], train[,11], type = "C-svc", kernel = "vanilladot", C = 100, scaled = TRUE)
+# accuracy = 0.8876404
+pred <- predict(svm.fit, test[,1:10])
+sum(pred == test[,11]) / nrow(test)
