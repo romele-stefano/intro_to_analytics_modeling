@@ -12,7 +12,7 @@ datamatrix <- as.matrix(data)
 set.seed(888)
 
 
-# QUESTION 2.1
+# QUESTION 2.2.1
 
 
 
@@ -62,7 +62,7 @@ a <- colSums(svm.fit@xmatrix[[1]] * svm.fit@coef[[1]])
 a0 <- svm.fit@b
 
 
-# QUESTION 2.1
+# QUESTION 2.2.2
 
 # Test polynomial kernel
 # C = 100^i gives values inside res <- 0.8639144 0.8623853 0.3318043 0.6773700 0.7217125
@@ -82,7 +82,7 @@ for (i in 1:5) {
 
 
 
-# QUESTION 2.3
+# QUESTION 2.2.3
 
 # KNN
 # create empty matrix to store results of double loop
