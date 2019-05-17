@@ -1,4 +1,4 @@
-setwd("C:/Users/ROMEST/Downloads")
+setwd("C:/Users/romel/Downloads/ISYE6501")
 # SVM
 library("kernlab")
 # KNN
@@ -24,17 +24,14 @@ set.seed(888)
 # C = 1 gives an accuracy of 0.8639144
 # C = 55550 gives an accuracy of 0.8623853
 # C = 100000 gives an accuracy of 0.8639144
-svm.fit <- ksvm(datamatrix[,1:10], datamatrix[,11], type="C-svc", kernel = "vanilladot", C = 100000, scaled = TRUE)
+svm.fit <- ksvm(datamatrix[,1:10], datamatrix[,11], type="C-svc", kernel = "vanilladot", C = 100, scaled = TRUE)
 
 # predict
 pred <- predict(svm.fit, data[,1:10])
-pred
 sum(pred == data[,11]) / nrow(data)
 
 # initialized variable
 res <- 0
-
-
 # for loop for automatic testing model with differnt values of C, kernel = "vanilladot"
 # C = i * 100 gives values inside res <- 0.8639144 0.8639144 0.8623853 0.8623853 0.8639144
 # C = 100^i gives values inside res <- 0.8639144 0.8623853 0.6253823 0.6636086 0.4923547
@@ -68,9 +65,13 @@ a0 <- svm.fit@b
 # C = 100^i gives values inside res <- 0.8639144 0.8623853 0.3318043 0.6773700 0.7217125
 # C = 100*i gives values inside res <- 0.8639144 0.8639144 0.8623853 0.8639144 0.8639144
 # C = 0.1^i gives values inside res <- 0.8639144 0.8639144 0.8639144 0.8639144 0.8639144
+# Test rbfdot
+# C = 100^i gives values inside res <- 0.9510703 0.9954128 0.9984709 1.0000000 1.0000000
+# C = 100*i gives values inside res <- 0.9587156 0.9602446 0.9678899 0.9678899 0.9785933Th
+# C = 0.1^i gives values inside res <- 0.8593272 0.8593272 0.8623853 0.8623853 0.8623853
 for (i in 1:5) {
   #train the 
-  svm.fit <- ksvm(datamatrix[,1:10], datamatrix[,11], type="C-svc", kernel = "polydot", C = 0.1 * i, scaled = TRUE)
+  svm.fit <- ksvm(datamatrix[,1:10], datamatrix[,11], type="C-svc", kernel = "rbfdot", C = 100*i, scaled = TRUE)
   
   # predict
   pred <- predict(svm.fit, data[,1:10])
@@ -86,12 +87,12 @@ for (i in 1:5) {
 
 # KNN
 # create empty matrix to store results of double loop
-fit_matrix <- matrix(0, nrow = nrow(data), ncol = 10 )
+fit_matrix <- matrix(0, nrow = nrow(data), ncol = 20 )
 
 # loop "i" for testing all data -1 data point each time
 # loop "j" for testing different values of k each time
 for (i in 1:nrow(data)){
-  for (j in 1:10){
+  for (j in 1:20){
     knn.fit = kknn(R1~.,data[-i,],data[i,], k = j, scale = TRUE) # use scaled data
     fit_matrix[i,j] <- fitted(knn.fit)
   }
@@ -103,7 +104,7 @@ colnames(fit_matrix) <- c("K=1", "K=2", "K=3", "K=4", "K=5", "K=6", "K=7", "K=8"
 accuracy <- 0
 # accuracy with different values of k <- [1] 0.8149847 0.8149847 0.8149847 0.8149847 0.8516820 
 # 0.8455657 0.8470948 0.8486239 0.8470948 0.8501529
-for (k in 1:10){
+for (k in 1:20){
   table(data[,11], fit_matrix[,k]) 
   accuracy[k] <- mean(fit_matrix[,k] == data$R1)
 }
@@ -113,15 +114,25 @@ for (k in 1:10){
 
 # QUESTION 3.1.A
 
-# k-folds = 10, k = 10
+# k-folds = 10, k = 12
 # taking data set as it is, we have an avg accuracy of  0.8268531
-# shuffling the data, we have an avg accuracy of  0.8502331
+# shuffling the data, we have an avg accuracy of  0.8369599
 
 # k-folds = 10, k = 3
 # shuffling the data, we have an avg accuracy of  0.7885781
 
-# k-folds = 10, k = 7
-# shuffling the data, we have an avg accuracy of  0.8222378
+# k-folds = 10, k = 5
+# shuffling the data, we have an avg accuracy of  0.8399785
+
+# k-folds = 5, k = 5
+# shuffling the data, we have an avg accuracy of  0.8542377
+
+# k-folds = 5, k = 12
+# shuffling the data, we have an avg accuracy of  0.8550158
+
+# k-folds = 5, k = 3
+# shuffling the data, we have an avg accuracy of  0.8442906
+
 
 data_shuffled <- data[sample(nrow(data)),]
 # store the results
@@ -137,7 +148,7 @@ for(i in 1:k_folds){
   validation <- data[index, ]
   
   #train the model
-  knn.fit = kknn(R1~., train, validation[,-11], k = 7, scale = TRUE) # use scaled data
+  knn.fit = kknn(R1~., train, validation[,-11], k = 5, scale = TRUE) # use scaled data
   predicted <- fitted(knn.fit)
   predicted <- ifelse(predicted > 0.5,1,0)
   table(validation$R1, predicted) 
@@ -153,9 +164,9 @@ avg <- sum(accuracy)/length(accuracy)
 
 # create a sample with 70% of observation
 s <- sample(1:3, size = nrow(data), prob = c(0.7, 0.15, 0.15), replace = TRUE)
-train <- datamatrix[s == 1,]
-validation <- datamatrix[s == 2,]
-test <- datamatrix[s == 3,]
+train <- as.matrix(data[s == 1,])
+validation <- as.matrix(data[s == 2,])
+test <- as.matrix(data[s == 3,])
 
 # Manual tuning
 svm.fit <- ksvm(train[,1:10], train[,11], type = "C-svc", kernel = "vanilladot", C = 500, scaled = TRUE)
@@ -182,7 +193,7 @@ sum(pred == test[,11]) / nrow(test)
 # C = 0.1^i gives values inside res <- 0.8545455 0.8545455 0.8545455 0.8545455 0.8545455
 for (i in 1:5) {
   #train the model
-  svm.fit <- ksvm(train[,1:10], train[,11], type = "C-svc", kernel = "polydot", C = 100^i, scaled = TRUE)
+  svm.fit <- ksvm(train[,1:10], train[,11], type = "C-svc", kernel = "vanilladot", C = 100^i, scaled = TRUE)
   
   # validate 
   pred_validation <- predict(svm.fit, validation[,1:10])
@@ -192,6 +203,6 @@ for (i in 1:5) {
 
 # test with selected model. We will use the vanilladot kernel with C = 100
 svm.fit <- ksvm(train[,1:10], train[,11], type = "C-svc", kernel = "vanilladot", C = 100, scaled = TRUE)
-# accuracy = 0.8876404
+# accuracy = 0.8823529
 pred <- predict(svm.fit, test[,1:10])
 sum(pred == test[,11]) / nrow(test)
