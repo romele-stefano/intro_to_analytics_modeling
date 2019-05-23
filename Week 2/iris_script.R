@@ -3,6 +3,11 @@ setwd("C:/Users/ROMEST/Downloads/Homework/week 2")
 data <- read.table("iris.txt", header = T)
 levels(data[,5]) <- c("3", "2", "1")
 
+
+#######
+######  REMEMBER TO SCALE THE DATA
+######
+
 set.seed(888)
 # BASIC ALGORITHM
 # kmeans clustering
