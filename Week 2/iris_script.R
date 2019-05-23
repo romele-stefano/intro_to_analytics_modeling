@@ -1,8 +1,6 @@
 setwd("C:/Users/ROMEST/Downloads/Homework/week 2")
 
-data <- read.csv("iris.txt", header = F)
-# columns are: Sepal.Length Sepal.Width Petal.Length Petal.Width Species
-colnames(data) <- c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width", "Species")
+data <- read.table("iris.txt", header = T)
 levels(data[,5]) <- c("3", "2", "1")
 
 set.seed(888)
@@ -32,7 +30,7 @@ sum(kmean.fit$cluster == data[,5])/nrow(data)
 
 # SEE https://stackoverflow.com/questions/15376075/cluster-analysis-in-r-determine-the-optimal-number-of-clusters
 wss <- (nrow(data)-1)*sum(apply(data,2,var))
-for (i in 2:15) wss[i] <- sum(kmeans(data,
+for (i in 1:15) wss[i] <- sum(kmeans(data[,-5],
                                      centers=i)$withinss)
 plot(1:15, wss, type="b", xlab="Number of Clusters",
      ylab="Within groups sum of squares")
@@ -49,3 +47,4 @@ for (k in 1:5){
   accuracy[k] <- sum(kmean.fit$cluster == data[,5])/nrow(data)
 }
 accuracy
+
