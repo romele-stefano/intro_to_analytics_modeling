@@ -234,6 +234,8 @@ data <- read.table("temps.txt", header = T)
 day <- data[,1]
 data <- data[,-1]
 
+# initialize parameter
+C <- 3
 # initialized empty matrix for storing data
 st <- matrix(0, nrow = nrow(data), ncol = ncol(data))
 # loop over columns 
