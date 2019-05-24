@@ -266,9 +266,9 @@ st <- as.data.frame(st)
 
 # plotting some years
 plot(st[,1], ylab = "CUSUM", main = "Evolution of CUSUM over time")
-points(st[,10], col = "blue")
-points(st[,20], col = "red")
-legend("topright", legend = c("1996", "2005", "2015"), col =c("black", "blue", "red"), lty = 1:2, cex = 0.8)
+points(st[,10], col = "blue", pch = 1)
+points(st[,20], col = "red", pch = 1)
+legend("topright", legend = c("1996", "2005", "2015"), col =c("black", "blue", "red"), pch = 1, cex = 0.8)
 
 
 # see when we have max value of CUSUM
