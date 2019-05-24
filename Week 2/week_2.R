@@ -269,3 +269,11 @@ plot(st[,1], ylab = "CUSUM", main = "Evolution of CUSUM over time")
 points(st[,10], col = "blue")
 points(st[,20], col = "red")
 legend("topright", legend = c("1996", "2005", "2015"), col =c("black", "blue", "red"), lty = 1:2, cex = 0.8)
+
+
+# see when we have max value of CUSUM
+M <- 0
+# find max for each year
+for (j in 1:ncol(st)){
+  M[j] <- which.max(st[,j])
+}
