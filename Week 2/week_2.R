@@ -5,11 +5,6 @@ data <- read.table("iris.txt", header = T)
 levels(data[,5]) <- c("3", "2", "1")
 
 
-#######
-######  REMEMBER TO SCALE THE DATA
-######
-
-
 # QUESTION 4.2
 
 set.seed(888)
@@ -268,7 +263,7 @@ for (j in 1:ncol(data)){
 st <- as.data.frame(st)
 
 # plotting some years
-plot(st[,1])
+plot(st[,1], ylab = "CUSUM", main = "Evolution of CUSUM over time")
 points(st[,10], col = "blue")
 points(st[,20], col = "red")
-legend("topright", legend=c("1996", "2005", "2015"), col =c("black", "blue", "red"), lty = 1:2, cex = 0.8)
+legend("topright", legend = c("1996", "2005", "2015"), col =c("black", "blue", "red"), lty = 1:2, cex = 0.8)
