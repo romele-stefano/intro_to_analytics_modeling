@@ -54,3 +54,7 @@ colnames(p) <- c("M","So","Ed","Po1","Po2","LF","M.F","Pop","NW","U1","U2","Weal
 
 # prediction
 prediction <- predict(glm.fit, newdata = p)
+
+
+# TO DO
+# Create second model with less predictors (based on p-values) and compare AIC
