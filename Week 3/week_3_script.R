@@ -23,18 +23,64 @@ x <- 1:length(data.vc)
 # y with predicted data
 y <- HW.fit[4]
 # unlist
-y<- unlist(y)
+y <- unlist(y)
 # extract only data related to the predicted temperature
 y <- y[1:length(data.vc)]
 # add line for predicted values on previous graph
 lines(x, y, col = "blue")
 
-# plot trend (EVALUATE)
-trend <- HW.fit[10]
-trend <- unlist(trend)
-abline(trend[1], trend[2], col = "red")
+# split HW.fit into years
+s <- as.vector(y)
+splitted <- split(s, ceiling(seq_along(s)/123))
+
+y.dataframe <- as.data.frame(splitted)
+y.dataframewithday <- cbind(data$DAY, y.dataframe)
 
 
+
+# initialize parameter
+C <- 3
+# initialized empty matrix for storing data
+st <- matrix(0, nrow = nrow(y.dataframe), ncol = ncol(y.dataframe))
+# loop over columns 
+for (j in 1:ncol(y.dataframe)){
+  # row avg
+  avgr <- mean(y.dataframe[,j])
+  # loop over rows
+  for (i in 1:nrow(y.dataframe)){
+    # first loop
+    if (i == 1) {
+      if (0 + (y.dataframe[i,j] - avgr - C) > 0){
+        st[i, j] <- 0 + (y.dataframe[i,j] - avgr - C)
+      } else {
+        st[i, j] <- 0
+      }
+    } else {
+      if (st[i-1] + (y.dataframe[i,j]- avgr - C) > 0){
+        st[i, j] <- st[i-1] + (y.dataframe[i,j] - avgr - C)
+      } else {
+        st[i, j] <- 0
+      }
+    }
+  }
+}
+
+# transform intro data frame my cusum values
+st <- as.data.frame(st)
+
+# find max for each year
+for (i in 1:ncol(st)){
+  M[i] <- which.max(st[,i])
+}
+
+format(Sys.Date(), format = "%d-%B")
+Sys.setlocale("LC_TIME", "C")
+D <- y.dataframewithday[M,1]
+d <- as.character(D)
+Y <- 1996:2015
+plot(Y, D, type = "l", xaxt= "n", yaxt = "n")
+axis(1, Y) 
+axis.Date(2, at = unique(d), format = "%d-%B")
 
 
 
@@ -58,3 +104,4 @@ prediction <- predict(glm.fit, newdata = p)
 
 # TO DO
 # Create second model with less predictors (based on p-values) and compare AIC
+
