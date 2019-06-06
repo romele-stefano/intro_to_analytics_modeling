@@ -45,10 +45,14 @@ sd_pred <- sapply(data[,1:15], sd)
 # Perhaps the most simple, quick and direct way to mean-center your data is by using the 
 # function scale(). By default, this function will standardize the data (mean zero, unit variance). 
 # To indicate that we just want to subtract the mean, we need to turn off the argument scale = FALSE.
+
+# https://www.researchgate.net/post/Would_someone_advice_me_on_how_to_rescale_variables
+
 # unscale the elements by multypling the values t(ik) with b(k)
 unval <- pca.fit$rotation[, 1:8] %*% betas
 a <- unval/sd_pred
 a0 <- b0 - sum(unval*m_pred/sd_pred)
 pred <- a0 + sum(a*p)
+
 
 
