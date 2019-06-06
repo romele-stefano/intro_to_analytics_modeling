@@ -4,6 +4,7 @@ data <- read.table("uscrime.txt", header = T)
 
 set.seed(888)
 #### PCA ####
+# scale = (x-mean(x))/std(x)
 pca.fit <- prcomp(data[,-16], scale = TRUE)
 
 # plot PCA
@@ -36,8 +37,18 @@ betas <- lm.fit$coefficients[2:9]
 # https://stats.stackexchange.com/questions/229092/how-to-reverse-pca-and-reconstruct-original-variables-from-several-principal-com
 # PCA reconstruction = PC scores * Eigenvectors(transposed) + Mean
 
-# find mean of predictors
+# find mean and standard deviation of predictors
 m_pred <- sapply(data[,1:15], mean)
+sd_pred <- sapply(data[,1:15], sd)
 
+
+# Perhaps the most simple, quick and direct way to mean-center your data is by using the 
+# function scale(). By default, this function will standardize the data (mean zero, unit variance). 
+# To indicate that we just want to subtract the mean, we need to turn off the argument scale = FALSE.
+# unscale the elements by multypling the values t(ik) with b(k)
+unval <- pca.fit$rotation[, 1:8] %*% betas
+a <- unval/sd_pred
+a0 <- b0 - sum(unval*m_pred/sd_pred)
+pred <- a0 + sum(a*p)
 
 
