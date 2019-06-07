@@ -3,7 +3,10 @@ setwd("C:/Users/ROMEST/Downloads/homework/Week 4")
 data <- read.table("uscrime.txt", header = T)
 
 set.seed(888)
-#### PCA ####
+
+
+#### QUESTION 9.1 ####
+
 # scale = (x-mean(x))/std(x)
 pca.fit <- prcomp(data[,-16], scale = TRUE)
 
@@ -55,4 +58,57 @@ a0 <- b0 - sum(unval*m_pred/sd_pred)
 pred <- a0 + sum(a*p)
 
 
+
+
+#### QUESTION 10.1 ####
+### A ###
+
+library(rpart)
+library(rattle)
+library(rpart.plot)
+
+
+# model
+tree.fit <- rpart(Crime ~ ., data = data)
+
+# show variable importance
+plot(tree.fit$variable.importance, xaxt = "n")
+l <- names(tree.fit$variable.importance)
+axis(1, at = 1:12, labels = l)
+
+# plot tree
+fancyRpartPlot(tree.fit)
+rpart.plot(tree.fit)
+
+
+
+
+
+### B ###
+
+library(randomForest)
+library(randomForestExplainer)
+
+# model
+rf.fit <- randomForest(Crime ~ ., data = data, ntree = 100, mtry = 4, localImp = TRUE)
+
+# check variable importance
+varImpPlot(rf.fit, main = "Variable Importance")
+
+# tune hyperparameters
+tun <- tuneRF(data[,-16], data$Crime, stepFactor = 0.5, plot = TRUE, ntreeTry = 1000, trace = TRUE, startmtry = 1, mtry = 4)
+
+# explain RF
+# explain_forest(rf.fit) # plot distribution of minimal depth and multi-way importance
+min_depth_frame <- min_depth_distribution(rf.fit)
+# k indicates the number of variables to plot
+plot_min_depth_distribution(min_depth_frame, mean_sample = "relevant_trees", k = 19)
+rf.importance <- measure_importance(rf.fit, mean_sample = "relevant_trees") # data frame with importance values (gini_decrease, times_a_root, etc.)
+mw1 <- plot_multi_way_importance(rf.importance, size_measure = "no_of_nodes", no_of_labels = 5)
+
+plot_importance_ggpairs(rf.importance)
+plot_importance_rankings(rf.importance)
+vars <- important_variables(rf.importance, k = 10, measures = c("mean_min_depth", "no_of_trees"))
+rf.interactions <- min_depth_interactions(rf.fit, vars) 
+plot_min_depth_interactions(rf.interactions) 
 
