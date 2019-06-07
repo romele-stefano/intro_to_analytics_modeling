@@ -112,3 +112,11 @@ vars <- important_variables(rf.importance, k = 10, measures = c("mean_min_depth"
 rf.interactions <- min_depth_interactions(rf.fit, vars) 
 plot_min_depth_interactions(rf.interactions) 
 
+
+
+
+#### QUESTION 10.3 ####
+data <- read.table("germancredit.txt", header = F)
+
+
+
