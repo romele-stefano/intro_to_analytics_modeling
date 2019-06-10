@@ -1,4 +1,5 @@
 setwd("C:/Users/ROMEST/Downloads/homework/Week 4")
+setwd("C:/Users/romel/Downloads/Week 4")
 
 data <- read.table("uscrime.txt", header = T)
 
@@ -116,7 +117,47 @@ plot_min_depth_interactions(rf.interactions)
 
 
 #### QUESTION 10.3 ####
+
+# required for confusionMatrix
+library(caret)
+
+# V21, 1 = good  2 = bad
 data <- read.table("germancredit.txt", header = F)
+# In order for the model to work, we have to change our response variable as 0 and 1
+data$V21[data$V21 == 2] <- 0
 
+# train and test data 
+s <- sample(nrow(data), 0.8*nrow(data))
+# split into training and testing data
+train <- data[s,]
+test <- data[-s,]
 
+# logit model
+glm.fit <- glm(V21 ~ ., data = train, family = binomial(link = 'logit'))
+
+# predict values
+glm.probTest <- predict(glm.fit, newdata = test, type = "response")
+glm.pred <- factor(ifelse(glm.probTest >= 0.35, 1, 0))
+c <- confusionMatrix(data = glm.pred, reference = as.factor(test$V21))
+mean(glm.pred == test$V21)
+
+# TOTAL COST = FP*5 + FN*1
+# threshold = 0.2, FP = 65, FN = 2, TC = 327, accuracy = 0.665
+# threshold = 0.5, FP = 34, FN = 14, TC = 184, accuracy = 0.76
+# threshold = 0.8, FP = 16, FN = 39, TC = 99, accuracy = 0.725
+# threshold = 0.9, FP = 9, FN = 75, TC = 120, accuracy = 0.58
+# threshold = 0.95, FP = 4, FN = 93, TC = 113, accuracy = 0.515
+
+val <- 0.01
+threshold <- 0
+TC <- 0
+for (i in 1:99){
+  threshold[i] <- val
+  glm.pred <- factor(ifelse(glm.probTest >= val, 1, 0))
+  c <- confusionMatrix(data = glm.pred, reference = as.factor(test$V21))
+  TC[i] <- c$table[2,1]*5 + c$table[1,2]*1
+  val <- val + 0.01
+}
+
+res <- cbind(threshold, TC)
 
