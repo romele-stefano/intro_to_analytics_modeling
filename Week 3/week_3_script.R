@@ -69,6 +69,7 @@ for (j in 1:ncol(y.dataframe)){
 st <- as.data.frame(st)
 
 # find max for each year
+M <- 0
 for (i in 1:ncol(st)){
   M[i] <- which.max(st[,i])
 }
@@ -80,9 +81,9 @@ d <- as.character(D)
 Y <- 1996:2015
 plot(Y, D, type = "l", xaxt= "n", yaxt = "n")
 axis(1, Y) 
-axis.Date(2, at = unique(d), format = "%d-%B")
+axis.Date(2, at = D, format = "%d-%B")
 
-
+ll <- cbind(D, Y)
 
 ## REGRESSION
 

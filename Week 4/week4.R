@@ -120,6 +120,7 @@ plot_min_depth_interactions(rf.interactions)
 
 # required for confusionMatrix
 library(caret)
+library(e1071)
 
 # V21, 1 = good  2 = bad
 data <- read.table("germancredit.txt", header = F)
@@ -137,7 +138,7 @@ glm.fit <- glm(V21 ~ ., data = train, family = binomial(link = 'logit'))
 
 # predict values
 glm.probTest <- predict(glm.fit, newdata = test, type = "response")
-glm.pred <- factor(ifelse(glm.probTest >= 0.35, 1, 0))
+glm.pred <- factor(ifelse(glm.probTest >= 0.89, 1, 0))
 c <- confusionMatrix(data = glm.pred, reference = as.factor(test$V21))
 mean(glm.pred == test$V21)
 
