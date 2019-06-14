@@ -123,6 +123,9 @@ elastic.fit.1se.minimized <- lm(Crime ~ M.F+Ineq+Prob, data = data)
 anova(elastic.fit.1se, elastic.fit.1se.minimized)
 
 
+########################################################################################
+################### TRY TO NORMALIZED DATE FOR STEPWISE BEFORE ANOVA ###################
+########################################################################################
 # compare stepwise, lasso and elastic
 anova(lm.fit.stepwise, lasso.fit.lambdamin, elastic.fit.lambdamin)
 
