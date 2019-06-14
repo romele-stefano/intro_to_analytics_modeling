@@ -7,6 +7,8 @@ set.seed(888)
 
 # for lasso and elastich net
 library(glmnet)
+# for plotting variables
+library(plotmo)
 
 data <- read.table("uscrime.txt", header = T)
 
@@ -43,7 +45,11 @@ predictors <- data.scaled[,1:15]
 response <- data.scaled[,16]
 
 # model: lasso
-lasso <- glmnet(predictors, response, family = "mgaussian", alpha = 1)
+lasso <- glmnet(predictors, response, alpha = 1)
+# plotmo
+plot_glmnet(lasso)
+
+
 
 
 # find best lambda value
