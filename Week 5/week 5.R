@@ -27,7 +27,6 @@ step.fit$anova
 lm.fit.stepwise <- lm(Crime ~ Po1+Ineq+Ed+M+Prob+U2, data = data)
 
 
-
 # LASSO #
 
 # create matrix form
@@ -121,6 +120,9 @@ elastic.fit.1se.minimized <- lm(Crime ~ M.F+Ineq+Prob, data = data)
 # https://bookdown.org/ndphillips/YaRrr/comparing-regression-models-with-anova.html
 anova(elastic.fit.1se, elastic.fit.1se.minimized)
 
+
+# compare stepwise, lasso and elastic
+anova(lm.fit.stepwise, lasso.fit.lambdamin, elastic.fit.lambdamin)
 
 
 
