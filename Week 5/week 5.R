@@ -64,6 +64,8 @@ coef(lasso.fit, s = lasso.fit$lambda.1se)
 ###   HOW TO INTERPRET ANOVA
 ###   https://www.graphpad.com/guides/prism/7/curve-fitting/reg_howtheftestworks.htm?toc=0&printWindow
 ###
+###   "It is conventional to list the models from smallest to largest, but this is up to the user."
+###
 
 # regression model for lambda.min
 lasso.fit.lambdamin <- lm(Crime ~ M+So+Ed+Po1+M.F+NW+U1+U2+Wealth+Ineq+Prob, data = data)
